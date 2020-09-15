@@ -15,20 +15,20 @@
 
     <body class="text-center">
         <div class="container">
-            <h1>Orders</h1>
+            <h1><?php echo ucfirst(lang('Common.orders')); ?></h1>
             <div id="errorsText" class="alert alert-danger my-3" style="display: none"></div>
             <div class="list-types d-flex justify-content-around align-items-stretch my-3">
-                <button id="listType1" onclick="changeListType(1)" class="col-3 btn btn-sm btn-secondary" type="button">Own orders</button>
-                <button id="listType2" onclick="changeListType(2)" class="col-3 btn btn-sm btn-primary" type="button">All orders</button>
-                <button id="listType3" onclick="changeListType(3)" class="col-3 btn btn-sm btn-primary" type="button">All orders grouped by code</button>
+                <button id="listType1" onclick="changeListType(1)" class="col-3 btn btn-sm btn-secondary" type="button"><?php echo lang('Orders.ownOrders'); ?></button>
+                <button id="listType2" onclick="changeListType(2)" class="col-3 btn btn-sm btn-primary" type="button"><?php echo lang('Orders.allOrders'); ?></button>
+                <button id="listType3" onclick="changeListType(3)" class="col-3 btn btn-sm btn-primary" type="button"><?php echo lang('Orders.allGroupedOrders'); ?></button>
             </div>
             <table id="ordersTable" class="table table-striped">
                 <thead>
                 <tr>
-                    <th scope="col">Code</th>
-                    <th scope="col">Amount</th>
-                    <th scope="col">Users</th>
-                    <th scope="col">Actions</th>
+                    <th scope="col"><?php echo ucfirst(lang('Common.code')); ?></th>
+                    <th scope="col"><?php echo ucfirst(lang('Common.amount')); ?></th>
+                    <th scope="col"><?php echo ucfirst(lang('Common.users')); ?></th>
+                    <th scope="col"><?php echo ucfirst(lang('Common.actions')); ?></th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -39,40 +39,6 @@
         <script>
             $(document).ready(function() {
                 retrieveOrders();
-                $('#joinGroup').click(function() {
-                    if( $('inputName').val() != '' && !$('inputSurname').val() != '' ) {
-                        $('#errorsText').hide();
-                        $('#step1').hide();
-                        $('#step2').show();
-                        $('#action').val('joinGroup');
-                        $('#submit').text('Join group');
-                    } else {
-                        $('#errorsText').text('Almost name and surname are needed');
-                        $('#errorsText').show();
-                    }
-                });
-
-                $('#createGroup').click(function() {
-                    if( $('inputName').val() != '' && $('inputSurname').val() != '' ) {
-                        $('#errorsText').hide();
-                        $('#step1').hide();
-                        $('#step2').show();
-                        $('#action').val('createGroup');
-                        $('#submit').text('Create new group');
-                    } else {
-                        $('#errorsText').text('Almost name and surname are needed');
-                        $('#errorsText').show();
-                    }
-                });
-
-                $('#back').click(function() {
-                    $('#step2').hide();
-                    $('#step1').show();
-                });
-
-                $('#submit').click(function() {
-                    login();
-                });
             });
 
             let type = 1;
@@ -85,10 +51,10 @@
 
             function retrieveOrders() {
                 let tableBody = '<tr>' +
-                    '<td><input type="text" id="inputCode" class="form-control" placeholder="Code" required="" autofocus=""></td>' +
-                    '<td><input type="number" id="inputAmount" class="form-control" placeholder="Amount" required="" autofocus=""></td>' +
+                    '<td><input type="text" id="inputCode" class="form-control" placeholder="<?php echo ucfirst(lang('Common.code')); ?>" required="" autofocus=""></td>' +
+                    '<td><input type="number" id="inputAmount" class="form-control" placeholder="<?php echo ucfirst(lang('Common.amount')); ?>" required="" autofocus=""></td>' +
                     '<td></td>' +
-                    '<td><button id="orderButton" onclick="createOrder()" class="btn btn-success btn-block" type="button">Add</button></td>' +
+                    '<td><button id="orderButton" onclick="createOrder()" class="btn btn-success btn-block" type="button"><?php echo ucfirst(lang('Common.add')); ?></button></td>' +
                     '</tr>';
 
                 $.ajax({
@@ -100,16 +66,16 @@
                             console.log(data);
                             $('#errorsText').hide();
 
-                            data.data.forEach(row => tableBody += '<tr id="order-'+row.order_id+'" class="orderRow">' +
+                            data.message.forEach(row => tableBody += '<tr id="order-'+row.order_id+'" class="orderRow">' +
                                 '<td>'+row.code+'</td>' +
                                 '<td class="amount">'+row.amount+'</td>' +
                                 '<td>'+row.username+'</td>' +
                                 '<td class="actions">' +
                                     (type !== 3 ?
-                                        '<button class="btn btn-warning btn-block updateOrder" onclick="updateOrder('+row.order_id+')">Edit</button>' +
-                                        '<button class="btn btn-danger btn-block deleteOrder" onclick="deleteOrder('+row.order_id+')">Delete</button>' +
-                                        '<button class="btn btn-success btn-block saveOrderUpdate d-none" onclick="saveOrderUpdate('+row.order_id+')">Save</button>' +
-                                        '<button class="btn btn-danger btn-block undoOrderUpdate d-none" onclick="undoOrderUpdate('+row.order_id+')">Undo</button>'
+                                        '<button class="btn btn-warning btn-block updateOrder" onclick="updateOrder('+row.order_id+')"><?php echo ucfirst(lang('Common.edit')); ?></button>' +
+                                        '<button class="btn btn-danger btn-block deleteOrder" onclick="deleteOrder('+row.order_id+')"><?php echo ucfirst(lang('Common.delete')); ?></button>' +
+                                        '<button class="btn btn-success btn-block saveOrderUpdate d-none" onclick="saveOrderUpdate('+row.order_id+')"><?php echo ucfirst(lang('Common.save')); ?></button>' +
+                                        '<button class="btn btn-danger btn-block undoOrderUpdate d-none" onclick="undoOrderUpdate('+row.order_id+')"><?php echo ucfirst(lang('Common.undo')); ?></button>'
                                     : '') +
                                 '</td>' +
                             '</tr>');
@@ -123,7 +89,7 @@
                     },
                     error: function(e){
                         console.log(e);
-                        alert("<|Server communication error|/>!");
+                        alert('<?php echo addslashes(lang('Error.server')); ?>');
                     }
                 });
             }
@@ -145,14 +111,14 @@
                             $('#errorsText').hide();
 
                             retrieveOrders(type);
-                            alert('New order created successfully');
+                            alert('<?php echo addslashes(lang('Orders.success.creation')); ?>');
                         } else {
                             $('#errorsText').text(data.message).show();
                         }
                     },
                     error: function(e){
                         console.log(e);
-                        alert("<|Server communication error|/>!");
+                        alert('<?php echo addslashes(lang('Error.server')); ?>');
                     }
                 });
             }
@@ -172,7 +138,7 @@
                 console.log(amount);
 
                 amountTd.html('<input class="oldAmount" type="hidden" value="'+amount+'"/>' +
-                    '<input class="inputEditAmount form-control" type="number" value="'+amount+'"/>');
+                    '<input class="inputEditAmount form-control" type="number" placeholder="<?php echo addslashes(ucfirst(lang('Common.amount'))); ?>" value="'+amount+'"/>');
 
                 $('#order-'+orderId+' .updateOrder').addClass('d-none');
                 $('#order-'+orderId+' .deleteOrder').addClass('d-none');
@@ -196,14 +162,14 @@
                             $('#errorsText').hide();
 
                             retrieveOrders(type);
-                            alert('Order updated successfully');
+                            alert('<?php echo addslashes(lang('Orders.success.update')); ?>');
                         } else {
                             $('#errorsText').text(data.message).show();
                         }
                     },
                     error: function(e){
                         console.log(e);
-                        alert("<|Server communication error|/>!");
+                        alert('<?php echo addslashes(lang('Error.server')); ?>');
                     }
                 });
             }
@@ -220,7 +186,7 @@
             }
 
             function deleteOrder(orderId) {
-                if (confirm('Are you sure to delete your order of code '+$('#order-'+orderId+' td:first-child').text()+' ?')) {
+                if (confirm('<?php echo addslashes(lang('Orders.deleteConfirm')); ?>'+$('#order-'+orderId+' td:first-child').text()+' ?')) {
                     $.ajax({
                         type: "POST",
                         url: "Orders/deleteOrder",
@@ -233,14 +199,14 @@
                                 $('#errorsText').hide();
 
                                 retrieveOrders(type);
-                                alert('Order deleted successfully');
+                                alert('<?php echo addslashes(lang('Orders.success.delete')); ?>');
                             } else {
                                 $('#errorsText').text(data.message).show();
                             }
                         },
                         error: function(e){
                             console.log(e);
-                            alert("Server communication error!");
+                            alert('<?php echo addslashes(lang('Error.server')); ?>');
                         }
                     });
                 }

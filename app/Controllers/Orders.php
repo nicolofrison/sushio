@@ -13,10 +13,6 @@ class Orders extends BaseController
         }
 	}
 
-	public function isValidUser($userId, $groupId) {
-        echo $this->userModel->isValidUser($userId, $groupId);
-    }
-
 	public function getJson($type = 1) {
 	    // type: 1 - own, 2 - all, 3 - all grouped by codes
         switch ($type) {
@@ -31,7 +27,7 @@ class Orders extends BaseController
         }
 
         header('Content-Type: application/json');
-        echo json_encode(array('success'=>true,'data' => $ordersList));
+        echo json_encode(array('success'=>true,'message' => $ordersList));
         exit;
     }
 
@@ -41,7 +37,7 @@ class Orders extends BaseController
 
         if (!is_numeric($amount)) {
             header('Content-Type: application/json');
-            echo json_encode(array('success'=>false,'data'=>'The number inserted is not valid'));
+            echo json_encode(array('success'=>false,'message'=>lang('Error.invalidNumber')));
             exit;
         }
 
@@ -54,9 +50,9 @@ class Orders extends BaseController
 
         header('Content-Type: application/json');
         if ($orderId > 0) {
-            echo json_encode(array('success'=>true,'data'=>$orderId));
+            echo json_encode(array('success'=>true,'message'=>$orderId));
         } else {
-            echo json_encode(array('success'=>false,'data'=>$this->orderModel->errors()));
+            echo json_encode(array('success'=>false,'message'=>$this->orderModel->errors()));
         }
         exit;
     }
@@ -68,14 +64,14 @@ class Orders extends BaseController
         $existingOrder = $this->orderModel->where('order_id', $orderId)->first();
         if (!isset($existingOrder) || $existingOrder === null) {
             header('Content-Type: application/json');
-            echo json_encode(array('success'=>false,'data'=>'The order with the given id doesn\'t exist'));
+            echo json_encode(array('success'=>false,'message'=>lang('Error.invalidOrderId')));
             exit;
         }
 
         $orderId = $this->orderModel->update($existingOrder['order_id'],array('amount'=>$amount));
 
         header('Content-Type: application/json');
-        echo json_encode(array('success'=>true,'data'=>$orderId));
+        echo json_encode(array('success'=>true,'message'=>$orderId));
         exit;
     }
 
@@ -88,7 +84,7 @@ class Orders extends BaseController
         }
 
         header('Content-Type: application/json');
-        echo json_encode(array('success'=>true,'data'=>''));
+        echo json_encode(array('success'=>true,'message'=>''));
         exit;
     }
 }

@@ -31,3 +31,7 @@ body {
     white-space: normal;
 }
 
+#ordersTable td {
+    vertical-align: middle;
+}
+
