@@ -103,7 +103,7 @@
                             data.data.forEach(row => tableBody += '<tr id="order-'+row.order_id+'" class="orderRow">' +
                                 '<td>'+row.code+'</td>' +
                                 '<td class="amount">'+row.amount+'</td>' +
-                                '<td>'+row.nickname+'</td>' +
+                                '<td>'+row.username+'</td>' +
                                 '<td class="actions">' +
                                     (type !== 3 ?
                                         '<button class="btn btn-warning btn-block updateOrder" onclick="updateOrder('+row.order_id+')">Edit</button>' +

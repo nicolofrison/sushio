@@ -22,8 +22,8 @@
                     <input type="text" id="inputName" class="form-control" placeholder="<?php echo ucfirst(lang('Common.name'));?>*" required="" autofocus="">
                     <label for="inputSurname" class="sr-only"><?php echo ucfirst(lang('Common.surname'));?></label>
                     <input type="text" id="inputSurname" class="form-control" placeholder="<?php echo ucfirst(lang('Common.surname'));?>*" required="" autofocus="">
-                    <label for="inputNickname" class="sr-only"><?php echo ucfirst(lang('Common.username'));?></label>
-                    <input type="text" id="inputNickname" class="form-control" placeholder="<?php echo ucfirst(lang('Common.username'));?>*" required="" autofocus="">
+                    <label for="inputUsername" class="sr-only"><?php echo ucfirst(lang('Common.username'));?></label>
+                    <input type="text" id="inputUsername" class="form-control" placeholder="<?php echo ucfirst(lang('Common.username'));?>*" required="" autofocus="">
                     <button id="joinGroup" class="btn btn-lg btn-primary btn-block" type="button"><?php echo lang('Login.alreadyHaveAGroup');?></button>
                     <button id="createGroup" class="btn btn-lg btn-primary btn-block" type="button"><?php echo lang('Login.createNewGroup');?></button>
                 </div>
@@ -43,7 +43,7 @@
         <script>
             $(document).ready(function() {
                 $('#joinGroup').click(function() {
-                    if( $('#inputName').val() !== '' && $('#inputSurname').val() !== '' && $('#inputNickname').val() !== '' ) {
+                    if( $('#inputName').val() !== '' && $('#inputSurname').val() !== '' && $('#inputUsername').val() !== '' ) {
                         $('#errorsText').hide();
                         $('#step1').hide();
                         $('#step2').show();
@@ -55,7 +55,7 @@
                 });
 
                 $('#createGroup').click(function() {
-                    if( $('#inputName').val() !== '' && $('#inputSurname').val() !== '' && $('#inputNickname').val() !== '' ) {
+                    if( $('#inputName').val() !== '' && $('#inputSurname').val() !== '' && $('#inputUsername').val() !== '' ) {
                         $('#errorsText').hide();
                         $('#step1').hide();
                         $('#step2').show();
@@ -85,7 +85,7 @@
                         'action': $('#action').val(),
                         'name': $('#inputName').val(),
                         'surname': $('#inputSurname').val(),
-                        'nickname': $('#inputNickname').val(),
+                        'username': $('#inputUsername').val(),
                         'groupName': $('#inputGroupName').val(),
                         'groupPassword': md5Password
                     },

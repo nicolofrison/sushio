@@ -71,8 +71,8 @@ class BaseController extends Controller
 		// $this->session = \Config\Services::session();
         $this->session = \Config\Services::session();
 
-        $this->dbforge = \Config\Database::forge();
-        $this->createDB();
+        //$this->dbforge = \Config\Database::forge();
+        //$this->createDB();
 
         $this->userModel = new UsersModel();
         $this->groupModel = new GroupsModel();

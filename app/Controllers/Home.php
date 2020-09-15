@@ -17,7 +17,7 @@ class Home extends BaseController
         $name = $this->request->getPost()['name'];
         $surname = $this->request->getPost()['surname'];
         // for now not considered
-        $nickname = $this->request->getPost()['nickname'];
+        $username = $this->request->getPost()['username'];
         $groupName = $this->request->getPost()['groupName'];
         $groupPassword = $this->request->getPost()['groupPassword'];
 
@@ -31,14 +31,14 @@ class Home extends BaseController
                 exit;
             }
 
-            $res = $this->userModel->where("nickname", $nickname)->where("group_id", $group['group_id'])->first();
-            if (isset($res) && $nickname === $res['nickname'] && !empty($nickname)) {
+            $res = $this->userModel->where("username", $username)->where("group_id", $group['group_id'])->first();
+            if (isset($res) && $username === $res['username'] && !empty($username)) {
                 header('Content-Type: application/json');
                 echo json_encode(array('success'=>false,'message'=>lang('Error.usernameAlreadyExist')));
                 exit;
             }
 
-            $userResult = $this->userModel->insert(array('name' => $name, 'surname' => $surname, 'nickname' => $nickname, 'group_id' => $group['group_id']));
+            $userResult = $this->userModel->insert(array('name' => $name, 'surname' => $surname, 'username' => $username, 'group_id' => $group['group_id']));
 
             $this->session->set('user_id', $userResult);
             $this->session->set('group_id', $group['group_id']);
@@ -62,7 +62,7 @@ class Home extends BaseController
                 exit;
             }
 
-            $userResult = $this->userModel->insert(array('name'=>$name,'surname'=>$surname, 'nickname' => $nickname,'group_id'=>$groupResult));
+            $userResult = $this->userModel->insert(array('name'=>$name,'surname'=>$surname, 'username' => $username,'group_id'=>$groupResult));
             if (!isset($userResult)) {
                 header('Content-Type: application/json');
                 echo json_encode(array('success'=>false,'message' => lang('Error.userAdd')));

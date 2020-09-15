@@ -5,7 +5,6 @@ class Orders extends BaseController
 
     public function index()
 	{
-	    //print_r($this->session);exit;
         if (!$this->session->has('user_id') || !$this->session->has('group_id')
             || !$this->userModel->isValidUser($this->session->get('user_id'), $this->session->get('group_id'))) {
             return redirect()->to(base_url('Home'));

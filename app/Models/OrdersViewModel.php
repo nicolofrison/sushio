@@ -11,6 +11,6 @@ class OrdersViewModel extends Model {
     }
 
     public function findAllByGroupIdGroupByCode($groupId) {
-        return $this->select('code, SUM(amount) AS amount, GROUP_CONCAT(nickname SEPARATOR \', \') AS nickname')->groupBy('code')->where('group_id', $groupId)->findAll();
+        return $this->select('code, SUM(amount) AS amount, GROUP_CONCAT(username SEPARATOR \', \') AS username')->groupBy('code')->where('group_id', $groupId)->findAll();
     }
 }
