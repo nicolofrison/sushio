@@ -8,8 +8,14 @@ class Home extends BaseController
 
 	public function index()
 	{
-		//return view('welcome_message');
-		return view('Login');
+        if ($this->session->has('user_id') && $this->session->has('group_id')
+            && $this->userModel->isValidUser($this->session->get('user_id'), $this->session->get('group_id'))) {
+            return redirect()->to(base_url('Orders'));
+        } else {
+            $this->session->remove('user_id');
+            $this->session->remove('group_id');
+            return view('Login');
+        }
 	}
 
 	public function login() {
@@ -32,7 +38,7 @@ class Home extends BaseController
             }
 
             $res = $this->userModel->where("username", $username)->where("group_id", $group['group_id'])->first();
-            if (isset($res) && $username === $res['username'] && !empty($username)) {
+            if (isset($res) && strcasecmp($username, $res['username']) === 0) {
                 header('Content-Type: application/json');
                 echo json_encode(array('success'=>false,'message'=>lang('Error.usernameAlreadyExist')));
                 exit;

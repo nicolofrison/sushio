@@ -6,6 +6,10 @@ body {
     background-color: #f5f5f5;
 }
 
+#loginPage .container {
+    max-width: 540px;
+}
+
 .form-user {
     width: 100%;
     padding: 15px;

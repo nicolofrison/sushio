@@ -12,7 +12,7 @@
 
     </head>
 
-    <body class="text-center d-flex align-items-center justify-content-center py-5">
+    <body id="loginPage" class="text-center d-flex align-items-center justify-content-center py-5">
         <div class="container">
             <form class="form-user">
                 <h1 class="h3 mb-3 font-weight-normal">Log in</h1>
