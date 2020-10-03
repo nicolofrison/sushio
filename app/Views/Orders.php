@@ -14,8 +14,9 @@
     </head>
 
     <body class="text-center">
+        <div id="successMessage" class="fixed-top alert alert-success" style="display: none"></div>
         <div class="container">
-            <h1><?php echo ucfirst(lang('Common.orders')); ?></h1>
+            <h1 class="py-3"><?php echo ucfirst(lang('Common.orders')); ?></h1>
             <div id="errorsText" class="alert alert-danger my-3" style="display: none"></div>
             <div class="list-types d-flex justify-content-around align-items-stretch my-3">
                 <button id="listType1" onclick="changeListType(1)" class="col-3 btn btn-sm btn-secondary" type="button"><?php echo lang('Orders.ownOrders'); ?></button>
@@ -94,6 +95,13 @@
                 });
             }
 
+            function successAlert(message) {
+                $('#successMessage').text(message).show();
+                setTimeout(() => {
+                    $('#successMessage').fadeOut(1000);
+                }, 1000);
+            }
+
             function createOrder() {
                 let code = $('#inputCode').val().toLowerCase();
                 let amount = $('#inputAmount').val();
@@ -111,7 +119,8 @@
                             $('#errorsText').hide();
 
                             retrieveOrders(type);
-                            alert('<?php echo addslashes(lang('Orders.success.creation')); ?>');
+
+                            successAlert('<?php echo addslashes(lang('Orders.success.creation')); ?>');
                         } else {
                             $('#errorsText').text(data.message).show();
                         }
@@ -162,7 +171,8 @@
                             $('#errorsText').hide();
 
                             retrieveOrders(type);
-                            alert('<?php echo addslashes(lang('Orders.success.update')); ?>');
+
+                            successAlert('<?php echo addslashes(lang('Orders.success.update')); ?>');
                         } else {
                             $('#errorsText').text(data.message).show();
                         }
@@ -199,7 +209,8 @@
                                 $('#errorsText').hide();
 
                                 retrieveOrders(type);
-                                alert('<?php echo addslashes(lang('Orders.success.delete')); ?>');
+
+                                successAlert('<?php echo addslashes(lang('Orders.success.delete')); ?>');
                             } else {
                                 $('#errorsText').text(data.message).show();
                             }
