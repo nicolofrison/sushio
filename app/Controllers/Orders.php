@@ -81,6 +81,24 @@ class Orders extends BaseController
         exit;
     }
 
+    public function toggleCheckOrder() {
+        $orderId = $this->request->getPost()['order_id'];
+        $check = $this->request->getPost()['check'];
+
+        $existingOrder = $this->orderModel->where('order_id', $orderId)->where('user_id', $this->session->get('user_id'))->first();
+        if (!isset($existingOrder) || $existingOrder === null) {
+            header('Content-Type: application/json');
+            echo json_encode(array('success'=>false,'message'=>lang('Error.invalidOrderId')));
+            exit;
+        }
+
+        $orderId = $this->orderModel->update($existingOrder['order_id'],array('completed'=>$check=="true"?1:0));
+
+        header('Content-Type: application/json');
+        echo json_encode(array('success'=>true,'message'=>$orderId));
+        exit;
+    }
+
     public function deleteOrder() {
         $orderId = $this->request->getPost()['order_id'];
 
