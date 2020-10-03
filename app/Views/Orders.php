@@ -26,6 +26,7 @@
             <table id="ordersTable" class="table table-striped">
                 <thead>
                 <tr>
+                    <th scope="col"></th>
                     <th scope="col"><?php echo ucfirst(lang('Common.code')); ?></th>
                     <th scope="col"><?php echo ucfirst(lang('Common.amount')); ?></th>
                     <th scope="col"><?php echo ucfirst(lang('Common.users')); ?></th>
@@ -52,6 +53,7 @@
 
             function retrieveOrders() {
                 let tableBody = '<tr>' +
+                    '<td></td>' +
                     '<td><input type="text" id="inputCode" class="form-control" placeholder="<?php echo ucfirst(lang('Common.code')); ?>" required="" autofocus=""></td>' +
                     '<td><input type="number" id="inputAmount" class="form-control" placeholder="<?php echo ucfirst(lang('Common.amount')); ?>" required="" autofocus=""></td>' +
                     '<td></td>' +
@@ -68,6 +70,7 @@
                             $('#errorsText').hide();
 
                             data.message.forEach(row => tableBody += '<tr id="order-'+row.order_id+'" class="orderRow">' +
+                                (type === 1 ? '<td><input type="checkbox" class="inputCheck form-control" onclick="toggleCheck('+row.order_id+')" '+(row.completed=="1"?'checked':'')+' /></td>':'<td/>') +
                                 '<td>'+row.code+'</td>' +
                                 '<td class="amount">'+row.amount+'</td>' +
                                 '<td>'+row.username+'</td>' +
@@ -85,7 +88,7 @@
                         } else {
                             $('#step2').hide();
                             $('#step1').show();
-                            $('#errorsText').text(data.message).show();
+                            alert(data.message);
                         }
                     },
                     error: function(e){
@@ -125,7 +128,7 @@
                                 $('#inputCode').focus();
                             }, 100);
                         } else {
-                            $('#errorsText').text(data.message).show();
+                            alert(data.message);
                         }
                     },
                     error: function(e){
@@ -177,7 +180,7 @@
 
                             successAlert('<?php echo addslashes(lang('Orders.success.update')); ?>');
                         } else {
-                            $('#errorsText').text(data.message).show();
+                            alert(data.message);
                         }
                     },
                     error: function(e){
@@ -198,6 +201,31 @@
                 $('#order-'+orderId+' .undoOrderUpdate').addClass('d-none');
             }
 
+            function toggleCheck(orderId) {
+                let check = $('#order-'+orderId+' .inputCheck').is(':checked');
+
+                $.ajax({
+                    type: "POST",
+                    url: "Orders/toggleCheckOrder",
+                    data: {
+                        'order_id': orderId,
+                        'check': check
+                    },
+                    success: function(data){
+                        if( data.success ) {
+                            console.log(data);
+                            $('#errorsText').hide();
+                        } else {
+                            alert(data.message);
+                        }
+                    },
+                    error: function(e){
+                        console.log(e);
+                        alert('<?php echo addslashes(lang('Error.server')); ?>');
+                    }
+                });
+            }
+
             function deleteOrder(orderId) {
                 if (confirm('<?php echo addslashes(lang('Orders.deleteConfirm')); ?>'+$('#order-'+orderId+' td:first-child').text()+' ?')) {
                     $.ajax({
@@ -215,7 +243,7 @@
 
                                 successAlert('<?php echo addslashes(lang('Orders.success.delete')); ?>');
                             } else {
-                                $('#errorsText').text(data.message).show();
+                                alert(data.message);
                             }
                         },
                         error: function(e){
