@@ -121,6 +121,9 @@
                             retrieveOrders(type);
 
                             successAlert('<?php echo addslashes(lang('Orders.success.creation')); ?>');
+                            setTimeout(() => {
+                                $('#inputCode').focus();
+                            }, 100);
                         } else {
                             $('#errorsText').text(data.message).show();
                         }
