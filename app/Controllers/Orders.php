@@ -61,7 +61,7 @@ class Orders extends BaseController
 	    $orderId = $this->request->getPost()['order_id'];
         $amount = $this->request->getPost()['amount'];
 
-        $existingOrder = $this->orderModel->where('order_id', $orderId)->first();
+        $existingOrder = $this->orderModel->where('order_id', $orderId)->where('user_id', $this->session->get('user_id'))->first();
         if (!isset($existingOrder) || $existingOrder === null) {
             header('Content-Type: application/json');
             echo json_encode(array('success'=>false,'message'=>lang('Error.invalidOrderId')));
