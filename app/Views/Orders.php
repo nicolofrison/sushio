@@ -71,7 +71,7 @@
                                 '<td class="amount">'+row.amount+'</td>' +
                                 '<td>'+row.username+'</td>' +
                                 '<td class="actions">' +
-                                    (type !== 3 ?
+                                    (type !== 3 && row.actions ?
                                         '<button class="btn btn-warning btn-block updateOrder" onclick="updateOrder('+row.order_id+')"><?php echo ucfirst(lang('Common.edit')); ?></button>' +
                                         '<button class="btn btn-danger btn-block deleteOrder" onclick="deleteOrder('+row.order_id+')"><?php echo ucfirst(lang('Common.delete')); ?></button>' +
                                         '<button class="btn btn-success btn-block saveOrderUpdate d-none" onclick="saveOrderUpdate('+row.order_id+')"><?php echo ucfirst(lang('Common.save')); ?></button>' +

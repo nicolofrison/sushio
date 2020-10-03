@@ -26,6 +26,12 @@ class Orders extends BaseController
                 $ordersList = $this->ordersViewModel->findAllByGroupIdAndUserId($this->session->get('group_id'), $this->session->get('user_id'));
         }
 
+        if ($type != 3) {
+            foreach ($ordersList AS &$order) {
+                $order['actions'] = $order['user_id'] == $this->session->get('user_id') ? 1 : 0;
+            }
+        }
+
         header('Content-Type: application/json');
         echo json_encode(array('success'=>true,'message' => $ordersList));
         exit;
