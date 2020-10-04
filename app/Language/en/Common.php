@@ -19,4 +19,5 @@ return [
     'save' => 'save',
     'undo' => 'undo',
     'confirmed' => 'confirmed',
+    'order' => 'order',
 ];

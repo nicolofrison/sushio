@@ -69,18 +69,18 @@
                             console.log(data);
 
                             data.message.forEach(row => tableBody += '<tr id="order-'+row.order_id+'" class="orderRow">' +
-                                (type === 1 ? '<td><input type="checkbox" class="inputCheck form-control" onclick="toggleCheck('+row.order_id+')" '+(row.completed=="1"?'checked':'')+' /></td>':'<td/>') +
+                                (type === 1 ? '<td><input type="checkbox" class="inputCheck form-control" onclick="toggleCheck('+row.order_id+')" '+(row.checked=="1"?'checked':'')+' /></td>':'<td/>') +
                                 '<td>'+row.code+'</td>' +
                                 '<td class="amount">'+row.amount+'</td>' +
                                 '<td>'+row.username+'</td>' +
                                 '<td class="actions">' +
-                                    (type !== 3 && row.editable === "1" && row.actions ?
+                                    (type !== 3 && row.confirmed == 0 && row.actions ?
                                         '<button class="btn btn-warning btn-block updateOrder" onclick="updateOrder('+row.order_id+')"><?php echo ucfirst(lang('Common.edit')); ?></button>' +
                                         '<button class="btn btn-danger btn-block deleteOrder" onclick="deleteOrder('+row.order_id+')"><?php echo ucfirst(lang('Common.delete')); ?></button>' +
                                         '<button class="btn btn-success btn-block saveOrderUpdate d-none" onclick="saveOrderUpdate('+row.order_id+')"><?php echo ucfirst(lang('Common.save')); ?></button>' +
                                         '<button class="btn btn-danger btn-block undoOrderUpdate d-none" onclick="undoOrderUpdate('+row.order_id+')"><?php echo ucfirst(lang('Common.undo')); ?></button>'
                                     : '') +
-                                    (row.editable === "0" ? '<?php echo ucfirst(lang('Common.confirmed')); ?>' : '') +
+                                    (row.confirmed > 0 ? '<?php echo ucfirst(lang('Common.order')); ?> ' + row.confirmed : '') +
                                 '</td>' +
                             '</tr>');
 

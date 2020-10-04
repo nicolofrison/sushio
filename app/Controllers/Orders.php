@@ -22,12 +22,9 @@ class Orders extends BaseController
                 break;
             case 3:
                 $ordersList = $this->ordersViewModel
-                    ->findAllByGroupIdGroupByCodeByEditable($this->session->get('group_id'), 0);
-                foreach ($ordersList AS &$row) {
-                    $row['editable'] = "0";
-                }
+                    ->findAllByGroupIdGroupByCodeByConfirmed($this->session->get('group_id'), true);
                 $ordersList = array_merge($ordersList, $this->ordersViewModel
-                    ->findAllByGroupIdGroupByCodeByEditable($this->session->get('group_id'), 1));
+                    ->findAllByGroupIdGroupByCodeByConfirmed($this->session->get('group_id'), false));
                 break;
             default:
                 $ordersList = $this->ordersViewModel
@@ -55,7 +52,7 @@ class Orders extends BaseController
             exit;
         }
 
-        $existingOrder = $this->orderModel->where('user_id', $this->session->get('user_id'))->where('code', $code)->where('editable', 1)->first();
+        $existingOrder = $this->orderModel->where('user_id', $this->session->get('user_id'))->where('code', $code)->where('confirmed', 0)->first();
         if (isset($existingOrder) && $existingOrder !== null) {
             $orderId = $this->orderModel->update($existingOrder['order_id'],array('code'=>$code,'amount'=>$existingOrder['amount']+$amount,'user_id'=>$this->session->get('user_id')));
         } else {
@@ -100,7 +97,7 @@ class Orders extends BaseController
             exit;
         }
 
-        $orderId = $this->orderModel->update($existingOrder['order_id'],array('completed'=>$check=="true"?1:0));
+        $orderId = $this->orderModel->update($existingOrder['order_id'],array('checked'=>$check=="true"?1:0));
 
         header('Content-Type: application/json');
         echo json_encode(array('success'=>true,'message'=>$orderId));
@@ -115,7 +112,9 @@ class Orders extends BaseController
             array_push($groupUserIds, $row['user_id']);
         }
 
-        $this->orderModel->setOrdersNotEditable($groupUserIds);
+        $confirmed = $this->ordersViewModel->select('MAX(confirmed) AS confirmed')->where('group_id', $this->session->get('group_id'))->first();
+
+        $this->orderModel->setOrdersConfirmed($groupUserIds, $confirmed['confirmed']+1);
 
         header('Content-Type: application/json');
         echo json_encode(array('success'=>true,'message'=>''));
