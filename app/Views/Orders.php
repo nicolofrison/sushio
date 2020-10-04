@@ -17,7 +17,6 @@
         <div id="successMessage" class="fixed-top alert alert-success" style="display: none"></div>
         <div class="container">
             <h1 class="py-3"><?php echo ucfirst(lang('Common.orders')); ?></h1>
-            <div id="errorsText" class="alert alert-danger my-3" style="display: none"></div>
             <div class="list-types d-flex justify-content-around align-items-stretch my-3">
                 <button id="listType1" onclick="changeListType(1)" class="col-3 btn btn-sm btn-secondary" type="button"><?php echo lang('Orders.ownOrders'); ?></button>
                 <button id="listType2" onclick="changeListType(2)" class="col-3 btn btn-sm btn-primary" type="button"><?php echo lang('Orders.allOrders'); ?></button>
@@ -35,6 +34,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
+            <button id="completeOrders" class="btn btn-lg btn-primary" style="display: none" onclick="confirmOrders()" type="button"><?php echo lang('Orders.completeOrders'); ?></button>
         </div>
         <script type="application/javascript" src="js/jquery-3.5.1.min.js"></script>
         <script type="application/javascript" src="js/jquery.md5.js"></script>
@@ -67,24 +67,30 @@
                     success: function(data){
                         if( data.success ) {
                             console.log(data);
-                            $('#errorsText').hide();
 
                             data.message.forEach(row => tableBody += '<tr id="order-'+row.order_id+'" class="orderRow">' +
-                                (type === 1 ? '<td><input type="checkbox" class="inputCheck form-control" onclick="toggleCheck('+row.order_id+')" '+(row.completed=="1"?'checked':'')+' /></td>':'<td/>') +
+                                (type === 1 ? '<td><input type="checkbox" class="inputCheck form-control" onclick="toggleCheck('+row.order_id+')" '+(row.checked=="1"?'checked':'')+' /></td>':'<td/>') +
                                 '<td>'+row.code+'</td>' +
                                 '<td class="amount">'+row.amount+'</td>' +
                                 '<td>'+row.username+'</td>' +
                                 '<td class="actions">' +
-                                    (type !== 3 && row.actions ?
+                                    (type !== 3 && row.confirmed == 0 && row.actions ?
                                         '<button class="btn btn-warning btn-block updateOrder" onclick="updateOrder('+row.order_id+')"><?php echo ucfirst(lang('Common.edit')); ?></button>' +
                                         '<button class="btn btn-danger btn-block deleteOrder" onclick="deleteOrder('+row.order_id+')"><?php echo ucfirst(lang('Common.delete')); ?></button>' +
                                         '<button class="btn btn-success btn-block saveOrderUpdate d-none" onclick="saveOrderUpdate('+row.order_id+')"><?php echo ucfirst(lang('Common.save')); ?></button>' +
                                         '<button class="btn btn-danger btn-block undoOrderUpdate d-none" onclick="undoOrderUpdate('+row.order_id+')"><?php echo ucfirst(lang('Common.undo')); ?></button>'
                                     : '') +
+                                    (row.confirmed > 0 ? '<?php echo ucfirst(lang('Common.order')); ?> ' + row.confirmed : '') +
                                 '</td>' +
                             '</tr>');
 
                             $('#ordersTable tbody').html(tableBody);
+
+                            if (type === 3) {
+                                $('#completeOrders').show();
+                            } else {
+                                $('#completeOrders').hide();
+                            }
                         } else {
                             $('#step2').hide();
                             $('#step1').show();
@@ -119,7 +125,6 @@
                     success: function(data){
                         if( data.success ) {
                             console.log(data);
-                            $('#errorsText').hide();
 
                             retrieveOrders(type);
 
@@ -174,7 +179,6 @@
                     success: function(data){
                         if( data.success ) {
                             console.log(data);
-                            $('#errorsText').hide();
 
                             retrieveOrders(type);
 
@@ -214,7 +218,6 @@
                     success: function(data){
                         if( data.success ) {
                             console.log(data);
-                            $('#errorsText').hide();
                         } else {
                             alert(data.message);
                         }
@@ -237,7 +240,6 @@
                         success: function(data){
                             if( data.success ) {
                                 console.log(data);
-                                $('#errorsText').hide();
 
                                 retrieveOrders(type);
 
@@ -247,6 +249,31 @@
                             }
                         },
                         error: function(e){
+                            console.log(e);
+                            alert('<?php echo addslashes(lang('Error.server')); ?>');
+                        }
+                    });
+                }
+            }
+
+            function confirmOrders() {
+                if (confirm('<?php echo addslashes(lang('Orders.completeConfirm')); ?>')) {
+                    $.ajax({
+                        type: "POST",
+                        url: "Orders/completeOrder",
+                        data: {},
+                        success: function (data) {
+                            if (data.success) {
+                                console.log(data);
+
+                                retrieveOrders(type);
+
+                                successAlert('<?php echo addslashes(lang('Orders.success.complete')); ?>');
+                            } else {
+                                alert(data.message);
+                            }
+                        },
+                        error: function (e) {
                             console.log(e);
                             alert('<?php echo addslashes(lang('Error.server')); ?>');
                         }
