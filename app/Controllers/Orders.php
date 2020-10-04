@@ -17,13 +17,21 @@ class Orders extends BaseController
 	    // type: 1 - own, 2 - all, 3 - all grouped by codes
         switch ($type) {
             case 2:
-                $ordersList = $this->ordersViewModel->where('group_id', $this->session->get('group_id'))->findAll();
+                $ordersList = $this->ordersViewModel->where('group_id', $this->session->get('group_id'))
+                    ->findAll();
                 break;
             case 3:
-                $ordersList = $this->ordersViewModel->findAllByGroupIdGroupByCode($this->session->get('group_id'));
+                $ordersList = $this->ordersViewModel
+                    ->findAllByGroupIdGroupByCodeByEditable($this->session->get('group_id'), 0);
+                foreach ($ordersList AS &$row) {
+                    $row['editable'] = "0";
+                }
+                $ordersList = array_merge($ordersList, $this->ordersViewModel
+                    ->findAllByGroupIdGroupByCodeByEditable($this->session->get('group_id'), 1));
                 break;
             default:
-                $ordersList = $this->ordersViewModel->findAllByGroupIdAndUserId($this->session->get('group_id'), $this->session->get('user_id'));
+                $ordersList = $this->ordersViewModel
+                    ->findAllByGroupIdAndUserId($this->session->get('group_id'), $this->session->get('user_id'));
         }
 
         if ($type != 3) {
@@ -47,7 +55,7 @@ class Orders extends BaseController
             exit;
         }
 
-        $existingOrder = $this->orderModel->where('user_id', $this->session->get('user_id'))->where('code', $code)->first();
+        $existingOrder = $this->orderModel->where('user_id', $this->session->get('user_id'))->where('code', $code)->where('editable', 1)->first();
         if (isset($existingOrder) && $existingOrder !== null) {
             $orderId = $this->orderModel->update($existingOrder['order_id'],array('code'=>$code,'amount'=>$existingOrder['amount']+$amount,'user_id'=>$this->session->get('user_id')));
         } else {
@@ -96,6 +104,21 @@ class Orders extends BaseController
 
         header('Content-Type: application/json');
         echo json_encode(array('success'=>true,'message'=>$orderId));
+        exit;
+    }
+
+    public function completeOrder() {
+        $groupUserIdsRes = $this->userModel->select('user_id')->where('group_id', $this->session->get('group_id'))->findAll();
+
+        $groupUserIds = array();
+        foreach ($groupUserIdsRes AS $row) {
+            array_push($groupUserIds, $row['user_id']);
+        }
+
+        $this->orderModel->setOrdersNotEditable($groupUserIds);
+
+        header('Content-Type: application/json');
+        echo json_encode(array('success'=>true,'message'=>''));
         exit;
     }
 

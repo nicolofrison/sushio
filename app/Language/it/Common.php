@@ -18,4 +18,5 @@ return [
     'delete' => 'elimina',
     'save' => 'salva',
     'undo' => 'annulla',
+    'confirmed' => 'confermato',
 ];
