@@ -8,7 +8,7 @@ class UsersModel extends Model {
     protected $table      = 'users';
     protected $primaryKey = 'user_id';
 
-    protected $allowedFields = ['name', 'surname','username','group_id'];
+    protected $allowedFields = ['name', 'surname','username','group_id','confirmed'];
 
     public function isValidUser($userId, $groupId) {
         $results = $this->db->query("SELECT * FROM users U JOIN groups G ON U.group_id = G.group_id WHERE U.user_id = ".$userId." " .
@@ -18,5 +18,18 @@ class UsersModel extends Model {
         } else {
             return false;
         }
+    }
+
+    public function allGroupConfirmed($groupId) {
+        $users = $this->where('group_id', $groupId)->findAll();
+
+        $confirm = true;
+        foreach ($users AS $row) {
+            if (!$row['confirmed']) {
+                $confirm = false;
+            }
+        }
+
+        return $confirm;
     }
 }

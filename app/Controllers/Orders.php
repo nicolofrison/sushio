@@ -32,8 +32,9 @@ class Orders extends BaseController
         }
 
         if ($type != 3) {
+            $confirmed = $this->userModel->where('user_id', $this->session->get('user_id'))->first()['confirmed'];
             foreach ($ordersList AS &$order) {
-                $order['actions'] = $order['user_id'] == $this->session->get('user_id') ? 1 : 0;
+                $order['actions'] = $order['user_id'] == $this->session->get('user_id') && !$confirmed ? 1 : 0;
             }
         }
 
@@ -105,16 +106,21 @@ class Orders extends BaseController
     }
 
     public function completeOrder() {
-        $groupUserIdsRes = $this->userModel->select('user_id')->where('group_id', $this->session->get('group_id'))->findAll();
+        $this->userModel->update($this->session->get('user_id'), array('confirmed' => 1));
 
-        $groupUserIds = array();
-        foreach ($groupUserIdsRes AS $row) {
-            array_push($groupUserIds, $row['user_id']);
+        if ($this->userModel->allGroupConfirmed($this->session->get('group_id'))) {
+            $groupUserIdsRes = $this->userModel->select('user_id')->where('group_id', $this->session->get('group_id'))->findAll();
+
+            $groupUserIds = array();
+            foreach ($groupUserIdsRes AS $row) {
+                array_push($groupUserIds, $row['user_id']);
+            }
+
+            $confirmed = $this->ordersViewModel->select('MAX(confirmed) AS confirmed')->where('group_id', $this->session->get('group_id'))->first();
+
+            $this->orderModel->setOrdersConfirmed($groupUserIds, $confirmed['confirmed']+1);
         }
 
-        $confirmed = $this->ordersViewModel->select('MAX(confirmed) AS confirmed')->where('group_id', $this->session->get('group_id'))->first();
-
-        $this->orderModel->setOrdersConfirmed($groupUserIds, $confirmed['confirmed']+1);
 
         header('Content-Type: application/json');
         echo json_encode(array('success'=>true,'message'=>''));
