@@ -39,3 +39,10 @@ body {
     vertical-align: middle;
 }
 
+#ordersTable tr td:first-child {
+    padding: 0.25rem;
+}
+
+#ordersTable input[type=checkbox] {
+	width: calc(100% - 2px);
+}

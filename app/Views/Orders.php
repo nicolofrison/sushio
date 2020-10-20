@@ -69,7 +69,7 @@
                             console.log(data);
 
                             data.message.forEach(row => tableBody += '<tr id="order-'+row.order_id+'" class="orderRow">' +
-                                (type === 1 ? '<td><input type="checkbox" class="inputCheck form-control" onclick="toggleCheck('+row.order_id+')" '+(row.checked=="1"?'checked':'')+' /></td>':'<td/>') +
+                                (type === 1 ? '<td><input type="checkbox" class="inputCheck form-control" onclick="toggleCheck('+row.order_id+')" '+(row.checked=="1"?'checked':'')+' /></td>':'<td><td/>') +
                                 '<td>'+row.code+'</td>' +
                                 '<td class="amount">'+row.amount+'</td>' +
                                 '<td>'+row.username+'</td>' +
