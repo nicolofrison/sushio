@@ -10,4 +10,5 @@ return [
     'allFieldsAreNeeded' => 'Tutti i campi sono necessari',
     'invalidNumber' => 'Il numero inserito non è valido',
     'invalidOrderId' => 'L\'ordine con l\'id fornito non è valido',
+	'orderAlreadyConfirmed' => 'Ordine già confermato',
 ];

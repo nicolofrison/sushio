@@ -78,6 +78,12 @@ class Orders extends BaseController
             echo json_encode(array('success'=>false,'message'=>lang('Error.invalidOrderId')));
             exit;
         }
+		
+		if ($existingOrder['confirmed'] > 0) {
+			header('Content-Type: application/json');
+            echo json_encode(array('success'=>false,'message'=>lang('Error.orderAlreadyConfirmed')));
+            exit;
+		}
 
         $orderId = $this->orderModel->update($existingOrder['order_id'],array('amount'=>$amount));
 

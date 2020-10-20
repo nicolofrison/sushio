@@ -185,6 +185,7 @@
                             successAlert('<?php echo addslashes(lang('Orders.success.update')); ?>');
                         } else {
                             alert(data.message);
+							window.location.reload();
                         }
                     },
                     error: function(e){
